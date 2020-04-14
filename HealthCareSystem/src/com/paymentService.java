@@ -1,25 +1,42 @@
 package com;
 
+import java.util.List;
 
 import javax.ws.rs.*;
-
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
 
 import model.Payments;
 
 //for JSON
 import com.google.gson.*;
 
-@Path("/paymentService")
-public class paymentService {
+import controller.PaymentsDBHandler;
 
-	Payments payments = new Payments();
+@Path("/paymentService")
+public class paymentService implements PaymentServiceInterface {
+
+	PaymentsDBHandler dbHandler = new PaymentsDBHandler();
 
 	@GET
 	@Path("/getAll/")
 	@Produces(MediaType.TEXT_HTML)
 	public String getPaymentAll() {
-		return payments.readAll();
+		return dbHandler.readAll();
+	}
+
+	@GET
+	@Path("/getAllJSON/")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public List<Payments> getPaymentAllJSON() {
+		return dbHandler.readAllJSON();
+	}
+
+	@Override
+	@GET
+	@Path("/getPayment/{ID}")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public List<Payments> getPaymentJSON(@PathParam("ID") int id) {
+		return dbHandler.readJSON(String.valueOf(id));
 	}
 
 	@POST
@@ -33,16 +50,24 @@ public class paymentService {
 
 		String paymentID1 = itemObject.get("paymentID").getAsString();
 
-		return payments.read(paymentID1);
+		return dbHandler.read(paymentID1);
 	}
 
 	@PUT
 	@Path("/updatePayment/")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public String updatePayment(@FormParam("paymentID") String id, @FormParam("paymentType") String type,
 			@FormParam("appointmentID") String App_id, @FormParam("paymentAmount") String amount) {
 
-		return payments.update(id, type, amount, App_id);
+		Payments payments = new Payments();
+
+		payments.setPaymentID(Integer.parseInt(id));
+		payments.setPaymentType(type);
+		payments.setPaymentAmount(Double.parseDouble(App_id));
+		payments.setAppointmentID(Integer.parseInt(amount));
+
+		return dbHandler.update(payments);
 
 	}
 
@@ -51,24 +76,34 @@ public class paymentService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String updatePayment(String data) {
+
+		Payments payments = new Payments();
+
 		// Convert input string to json object
 		JsonObject itemObject = new JsonParser().parse(data).getAsJsonObject();
 
-		String paymentID = itemObject.get("paymentID").getAsString();
-		String paymentType = itemObject.get("paymentType").getAsString();
-		String paymentAmount = itemObject.get("paymentAmount").getAsString();
-		String appointmentID = itemObject.get("appointmentID").getAsString();
+		payments.setPaymentID(itemObject.get("paymentID").getAsInt());
+		payments.setPaymentType(itemObject.get("paymentType").getAsString());
+		payments.setPaymentAmount(itemObject.get("paymentAmount").getAsDouble());
+		payments.setAppointmentID(itemObject.get("appointmentID").getAsInt());
 
-		return payments.update(paymentID, paymentType, paymentAmount, appointmentID);
+		return dbHandler.update(payments);
 	}
 
 	@POST
 	@Path("/insertPayment/")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public String addPayment(@FormParam("paymentAmount") String amount, @FormParam("paymentType") String type,
-			@FormParam("appointmentID") String App_id, String data) {
+			@FormParam("appointmentID") String App_id) {
 
-		return payments.insert(type, amount, App_id);
+		Payments payments = new Payments();
+
+		payments.setPaymentType(type);
+		payments.setPaymentAmount(Double.parseDouble(App_id));
+		payments.setAppointmentID(Integer.parseInt(amount));
+		
+		return dbHandler.insert(payments);
 
 	}
 
@@ -77,15 +112,17 @@ public class paymentService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String addPayment(String data) {
+
+		Payments payments = new Payments();
 		
 		// Convert input string to json object
 		JsonObject itemObject = new JsonParser().parse(data).getAsJsonObject();
 
-		String paymentType = itemObject.get("paymentType").getAsString();
-		String paymentAmount = itemObject.get("paymentAmount").getAsString();
-		String appointmentID = itemObject.get("appointmentID").getAsString();
+		payments.setPaymentType(itemObject.get("paymentType").getAsString());
+		payments.setPaymentAmount(itemObject.get("paymentAmount").getAsDouble());
+		payments.setAppointmentID(itemObject.get("appointmentID").getAsInt());
 
-		return payments.insert(paymentType, paymentAmount, appointmentID);
+		return dbHandler.insert(payments);
 	}
 
 	@DELETE
@@ -93,12 +130,12 @@ public class paymentService {
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String deletePayment(String id) {
-		
+
 		// Convert input string to json object
 		JsonObject itemObject = new JsonParser().parse(id).getAsJsonObject();
-						
+
 		String ID = itemObject.get("paymentID").getAsString();
-		return payments.delete(ID);
+		return dbHandler.delete(ID);
 
 	}
 
@@ -106,6 +143,7 @@ public class paymentService {
 	@Path("/getAppointment/")
 	@Produces(MediaType.TEXT_HTML)
 	public String getAppointmentID() {
-		return payments.readAll();
+		return dbHandler.readAll();
 	}
+
 }
