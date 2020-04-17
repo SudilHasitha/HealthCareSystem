@@ -6,6 +6,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import model.Payments;
+import model.Appointments;
 
 //for JSON
 import com.google.gson.*;
@@ -18,14 +19,14 @@ public class paymentService implements PaymentServiceInterface {
 	PaymentsDBHandler dbHandler = new PaymentsDBHandler();
 
 	@GET
-	@Path("/getAll/")
+	@Path("/Admin/getAll/")
 	@Produces(MediaType.TEXT_HTML)
 	public String getPaymentAll() {
 		return dbHandler.readAll();
 	}
 
 	@GET
-	@Path("/getAllJSON/")
+	@Path("/Admin/getAllJSON/")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Payments> getPaymentAllJSON() {
 		return dbHandler.readAllJSON();
@@ -54,7 +55,7 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@PUT
-	@Path("/updatePayment/")
+	@Path("/Admin/updatePayment/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public String updatePayment(@FormParam("paymentID") String id, @FormParam("paymentType") String type,
@@ -72,7 +73,7 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@PUT
-	@Path("/updatePaymentJSON/")
+	@Path("/Admin/updatePaymentJSON/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String updatePayment(String data) {
@@ -126,7 +127,7 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@DELETE
-	@Path("/deletePaymentJSON/")
+	@Path("/Admin/deletePaymentJSON/")
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String deletePayment(String id) {
@@ -140,10 +141,11 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@GET
-	@Path("/getAppointment/")
+	@Path("/getAppointmentID/")
 	@Produces(MediaType.TEXT_HTML)
-	public String getAppointmentID() {
-		return dbHandler.readAll();
+	public int getAppointmentID() {
+		Appointments appointment = new Appointments();
+		return appointment.getId();
 	}
 
 }
