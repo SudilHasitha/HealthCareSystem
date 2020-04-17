@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import controller.PatientsDBHandler;
+import model.Allergies;
 import model.Patient;
 
 
@@ -23,7 +24,7 @@ public class PatientService {
 	PatientsDBHandler repo = new PatientsDBHandler();
 	
 	@GET
-	@Produces({MediaType.APPLICATION_XML , MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML ,MediaType.APPLICATION_JSON})
 	public List<Patient> getPatients() {
 		
 		System.out.println("getPatient is called");
@@ -31,23 +32,32 @@ public class PatientService {
 	
 		return repo.getPatients() ;
 	}
-	   
+	    
+	
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Patient getPatient(@PathParam("id") int id) {
-		
-		return repo.getPatient(id) ;
+		Patient patient = repo.getPatient(id);
+		patient.setAllergies(repo.getAllergybyPatientID(id));
+		return  patient;
 	}
+	
 
 	@POST
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Patient createPatient(Patient p1) {
 		
+		
 		System.out.println(p1.getAge());
 		System.out.println(p1.getName() );
-		repo.createPatient(p1);
-		
+		System.out.println(p1.getPatientAddress());
+		System.out.println(p1.getBloodType() );
+		System.out.println(p1.getEmail());
+		System.out.println(p1.getPatientTelephone());
+	
+		int id = repo.createPatient(p1);
+		p1.setId(id);
 		return p1;
 	}
 	
@@ -56,19 +66,24 @@ public class PatientService {
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Patient updatePatient(Patient p1) {
 		
+		System.out.println("Updated");
 		System.out.println(p1.getId());
 		System.out.println(p1.getAge());
 		System.out.println(p1.getName() );
+		System.out.println(p1.getPatientAddress());
+		System.out.println(p1.getBloodType() );
+		System.out.println(p1.getEmail());
+		System.out.println(p1.getPatientTelephone());
+	
+		
 		if(repo.getPatient(p1.getId()).getId()==0) {
 			
 			repo.createPatient(p1);
 		}
 		else {
 			repo.updatePatient(p1);
-		}
+	}
 			
-
-		
 		return p1;
 	}
 	
@@ -84,6 +99,7 @@ public class PatientService {
 		
 		return p;
 	}
+	
 	
 }
 
