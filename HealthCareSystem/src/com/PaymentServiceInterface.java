@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.ws.rs.*;
 
+import model.Appointments;
 import model.Payments;
+
 
 public interface PaymentServiceInterface {
 
@@ -28,5 +30,5 @@ public interface PaymentServiceInterface {
 
 	public String deletePayment(String id);
 
-	public String getAppointmentID();
+	public int getAppointmentID();
 }
