@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.sql.*;
 import java.util.List;
 
+import model.Allergies;
 import model.Patient;
 
 public class PatientsDBHandler {
@@ -42,6 +43,11 @@ public class PatientsDBHandler {
 				p.setId(rs.getInt(1));
 				p.setName(rs.getString(2));
 				p.setAge(rs.getInt(3));
+				p.setBloodType(rs.getString(6));
+				p.setPatientAddress(rs.getString(4));
+				p.setEmail(rs.getString(7));
+			
+				p.setPatientTelephone(rs.getInt(5));
 				
 				patients.add(p);
 			}
@@ -51,6 +57,7 @@ public class PatientsDBHandler {
 
 		return patients;
 	}
+	
 
 	public Patient getPatient(int id) {
 
@@ -63,9 +70,13 @@ public class PatientsDBHandler {
 			if(rs.next()) {
 				
 				p.setId(rs.getInt(1));
-				p.setName(rs.getString(2));
+			    p.setName(rs.getString(2));
 				p.setAge(rs.getInt(3));
-
+				p.setBloodType(rs.getString(6));
+				p.setPatientAddress(rs.getString(4));
+				p.setEmail(rs.getString(7));
+			
+				p.setPatientTelephone(rs.getInt(5));
 				
 			}
 		} catch (Exception e) {
@@ -75,33 +86,48 @@ public class PatientsDBHandler {
 		return p;
 	}
 
-	public void createPatient(Patient p1) {
+	public int createPatient(Patient p1) {
 		// TODO Auto-generated method stub
-		String sql = "insert into patients ( patientName,patientAge) values (?, ?);" ; 
-		
+		String sql = "insert into patients ( patientName,patientAge,patientAddress,patientTelephone,bloodType,email) values (?, ?, ?, ?, ?, ?);" ; 
+		int id = 0;
 		try {
 			
-			PreparedStatement st = con.prepareStatement(sql);
+			PreparedStatement st = con.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS );
 			st.setString(1 , p1.getName());
 			st.setInt(2, p1.getAge());
+			st.setInt(4,p1.getPatientTelephone());
+			st.setString(5, p1.getBloodType());
+			st.setString(3, p1.getPatientAddress());
+			st.setString(6,p1.getEmail());
+	
+
 			st.executeUpdate();
+			ResultSet rs = st.getGeneratedKeys();
+		    rs.next();
+		    id = rs.getInt(1);
 			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		return id;
 		
 	}
 	
 	public void updatePatient(Patient p1) {
 		// TODO Auto-generated method stub
-		String sql = "update patients set patientName=? , patientAge=? where patientID=? "; 
+		String sql = "update patients set patientName=? , patientAge=?, patientAddress=? , patientTelephone=? , bloodType=? , email=? where patientID=? "; 
 		
 		try {
 			
 			PreparedStatement st = con.prepareStatement(sql);
 			st.setString(1 , p1.getName());
 			st.setInt(2, p1.getAge());
-			st.setInt(3, p1.getId());
+			st.setInt(7, p1.getId());
+			st.setInt(4,p1.getPatientTelephone());
+			st.setString(5, p1.getBloodType());
+			st.setString(3, p1.getPatientAddress());
+			st.setString(6,p1.getEmail());
+	
 
 			st.executeUpdate();
 			
@@ -130,6 +156,146 @@ public class PatientsDBHandler {
 		
 	}
 	
+	public List<Allergies> getAllergies() {
+
+		List<Allergies> allergies = new ArrayList<>();
+		String sql = "Select * from allergies";
+
+		try {
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			
+
+			while (rs.next()) {
+				Allergies a = new Allergies();
+				
+				
+				a.setAllergyID(rs.getInt(1));
+				a.setPatientID(rs.getInt(2));
+				a.setAllergyname(rs.getString(3));
+				allergies.add(a);
+				
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return allergies;
+	}
+	
+	public List<Allergies> getAllergybyPatientID(int id) {
+
+		
+		String sql = "Select *  from allergies a where a.patientID="+id;
+		List<Allergies> allergy = new ArrayList<>();
+		
+		try {
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+
+			while( rs.next() ){
+				Allergies a = new Allergies();
+				System.out.println(rs.getInt("idallergyID"));
+				a.setAllergyID(rs.getInt("idallergyID"));
+				a.setPatientID(rs.getInt("patientID"));
+				a.setAllergyname(rs.getString("allergyName"));			
+				allergy.add(a);
+
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+  
+		return allergy;
+	}
+	
+	//Get allergy by ID
+	public Allergies getAllergybyID(int id) {
+
+		String sql = "Select * from allergies where idallergyID="+id;
+		Allergies a = new Allergies();
+		try {
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+
+			if(rs.next()) {
+				
+				
+				a.setAllergyID(rs.getInt(1));
+				a.setPatientID(rs.getInt(2));
+				a.setAllergyname(rs.getString(3));
+			
+				
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+  
+		return a;
+	}
+	
+	
+	
+	public void addAllergies(Allergies a1 ) {
+		// TODO Auto-generated method stub
+		String sql = "insert into allergies ( PatientID,allergyName) values (?, ?);" ; 
+		
+		try {
+			
+			PreparedStatement st = con.prepareStatement(sql);
+			
+			st.setInt(1, a1.getPatientID());
+			st.setString(2, a1.getAllergyname());
+		
+
+			st.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+	}
+	
+	public void updateAllergy(Allergies a1) {
+		// TODO Auto-generated method stub
+		String sql = "update allergies set PatientID=? , allergyName=? where idallergyID=? "; 
+		
+		try {
+			
+			PreparedStatement st = con.prepareStatement(sql);
+			
+		
+			st.setInt(3, a1.getAllergyID());
+			st.setInt(1, a1.getPatientID());
+			st.setString(2, a1.getAllergyname());
+	
+
+			st.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+	}
+	
+	public void deleteAllergy(int id) {
+		// TODO Auto-generated method stub
+		
+ String sql = "delete from allergies where idallergyID=?"; 
+		
+		try {
+			
+			PreparedStatement st = con.prepareStatement(sql);
+			
+			st.setInt(1,id );
+
+			st.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+	}
 	
 
 }
