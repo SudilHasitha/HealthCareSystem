@@ -75,7 +75,6 @@ public class Hospital {
 		this.hos_password = hos_password;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Hospital [hospital_reg_no=" + hospital_reg_no + ", hos_name=" + hos_name + ", hos_type="
