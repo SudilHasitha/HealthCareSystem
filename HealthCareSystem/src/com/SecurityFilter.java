@@ -21,7 +21,7 @@ public class SecurityFilter implements javax.ws.rs.container.ContainerRequestFil
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String AUTHORIZATION_PREFIX = "Basic ";
 	private static final String URL_PREFIX_ADMIN = "Admin";
-	private static final String URL_PREFIX_HOSPITAL = "hospital";
+//	private static final String URL_PREFIX_HOSPITAL = "hospital";
 	
 	// Create DB connection
 	private Connection connect() {
