@@ -1,17 +1,7 @@
 package com;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import org.jsoup.Jsoup;
@@ -22,13 +12,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import controller.HospitalDBHandler;
-import model.Hospital;
 
 @Path("/hospital")
-public class HospitalService {
+public class HospitalService implements HospitalInterface{
 	 
-	HospitalDBHandler HosObj = new HospitalDBHandler();
+	// Admin username : Admin | Password =Admin123
 	
+	HospitalDBHandler HosObj = new HospitalDBHandler();
+	@RolesAllowed("ADMIN")
 	@GET
 	@Path("readallHos")
 	@Produces(MediaType.TEXT_HTML)
@@ -37,7 +28,7 @@ public class HospitalService {
 		return HosObj.readAllHospital() ;
 	}
 	
-	
+	@RolesAllowed("ADMIN")
 	@POST
 	@Path("insertHos")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -135,6 +126,13 @@ public class HospitalService {
 		return output;
 	}
 	
+	@GET
+	@Path("loginCheck/{regNo}/{password}")
+	@Produces(MediaType.TEXT_HTML)
+	public boolean CheckLogin(@PathParam("regNo") String no, @PathParam("password") String password) {
+		
+		return HosObj.loginHos(no, password);	
+	}
 }
 
 

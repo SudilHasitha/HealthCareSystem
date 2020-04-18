@@ -2,8 +2,6 @@ package controller;
 
 import java.sql.*;
 
-import model.Hospital;
-
 public class HospitalDBHandler {
 	private Connection connect()
 	{
@@ -225,7 +223,7 @@ public class HospitalDBHandler {
 
 			// Prepare the html table to be displayed
 			output = "<table border=\"1\"><tr><th>Registration No</th><th>Name</th><th>Type</th>"
-					+ "<th>Addressline</th><th>city</th><th>province</th><th>Contact</th><th>Fee</th><th>Update</th><th>Remove</th></tr>";
+					+ "<th>Addressline</th><th>city</th><th>province</th><th>Contact</th><th>Fee</th></tr>";
 			
 			String query = "select * from hospital";
 			Statement statement = con.createStatement();
@@ -233,7 +231,6 @@ public class HospitalDBHandler {
 
 			// iterate through the results
 			while (resultSet.next()) {
-				String hos_id = Integer.toString(resultSet.getInt(1));
 				String hospital_reg_no = resultSet.getString(2);
 				String hos_name = resultSet.getString(3);
 				String type_private = resultSet.getString(4);
@@ -254,12 +251,6 @@ public class HospitalDBHandler {
 				output += "<td>" + telephone + "</td>";
 				output += "<td>" + hospital_fee + "</td>";
 		
-
-				// buttons
-				output += "<td><input name=\"btnUpdate\" type=\"button\" value=\"Update\" class=\"btn btn-secondary\"></td>"
-						+ "<td><form method=\"post\" action=\"items.jsp\">"
-						+ "<input name=\"btnRemove\" type=\"submit\" value=\"Remove\" class=\"btn btn-danger\">"
-						+ "<input name=\"itemID\" type=\"hidden\" value=\"" + hos_id + "\">" + "</form></td></tr>";
 			}
 
 			con.close();
@@ -320,6 +311,47 @@ public class HospitalDBHandler {
 			output = "Error while reading";
 			System.err.println(e.getMessage());
 		}
+		return output;
+	}
+	
+	public boolean loginHos(String regNo, String password) {
+		boolean output = false;
+
+		try {
+			Connection con = connect();
+
+			if (con == null) {
+				System.out.println("Error while connecting database");
+				
+				 output=  false;
+			}
+			
+			String query = "select hospital_reg_no,hos_password from hospital h where hospital_reg_no = "+regNo + "and hos_password = '" +password +"'";
+			Statement statement = con.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+			
+			if(resultSet.next() == false) {
+				System.out.println("Invalide user 'Registration Number' or 'Password'");
+				output =  false;
+			}
+		
+			while(resultSet.next()) {
+				String hospital_reg_no = resultSet.getString(1);
+				String hos_name = resultSet.getString(2);
+					
+					System.out.println("hospital_reg_no" + hospital_reg_no);
+					System.out.println("hos_name" + hos_name);
+					
+					output=  true;
+			 }
+			
+			 con.close();
+		}
+		catch(Exception e) {
+			System.out.println( "Error while reading");
+			System.out.println(e.getMessage());
+		}
+		
 		return output;
 	}
 	
