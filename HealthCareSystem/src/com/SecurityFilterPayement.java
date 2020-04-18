@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 @Provider
-public class SecurityFilter implements javax.ws.rs.container.ContainerRequestFilter {
+public class SecurityFilterPayement implements javax.ws.rs.container.ContainerRequestFilter {
 
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String AUTHORIZATION_PREFIX = "Basic ";
 	private static final String URL_PREFIX_ADMIN = "Admin";
-//	private static final String URL_PREFIX_HOSPITAL = "hospital";
+
 	
 	// Create DB connection
 	private Connection connect() {
@@ -68,8 +68,9 @@ public class SecurityFilter implements javax.ws.rs.container.ContainerRequestFil
 					while (resultSet.next()) {
 
 						String Password = Integer.toString(resultSet.getInt(1));
-						System.out.println("DB password "+Password);
-						if (password.equalsIgnoreCase(Password)) {
+						String name = Integer.toString(resultSet.getInt(2));
+						
+						if (password.equalsIgnoreCase(Password)&&userName.equalsIgnoreCase(name)) {
 							return;
 						}
 					}

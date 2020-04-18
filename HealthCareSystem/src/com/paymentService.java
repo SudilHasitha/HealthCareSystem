@@ -3,10 +3,18 @@ package com;
 import java.util.List;
 
 import javax.ws.rs.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 
 import model.Payments;
-import model.Appointments;
+
 
 //for JSON
 import com.google.gson.*;
@@ -15,6 +23,10 @@ import controller.PaymentsDBHandler;
 
 @Path("/paymentService")
 public class paymentService implements PaymentServiceInterface {
+
+	public paymentService() {
+		super();
+	}
 
 	PaymentsDBHandler dbHandler = new PaymentsDBHandler();
 
@@ -95,14 +107,14 @@ public class paymentService implements PaymentServiceInterface {
 	@Path("/insertPayment/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public String addPayment(@FormParam("paymentAmount") String amount, @FormParam("paymentType") String type,
-			@FormParam("appointmentID") String App_id) {
+	public String addPayment(@FormParam("paymentAmount") String amount, @FormParam("paymentType") String type) {
 
+		paymentService ps = new paymentService();
 		Payments payments = new Payments();
 
 		payments.setPaymentType(type);
-		payments.setPaymentAmount(Double.parseDouble(App_id));
-		payments.setAppointmentID(Integer.parseInt(amount));
+		payments.setAppointmentID(ps.getAppointmentID());
+		payments.setPaymentAmount(Double.parseDouble(amount));
 		
 		return dbHandler.insert(payments);
 
@@ -115,13 +127,14 @@ public class paymentService implements PaymentServiceInterface {
 	public String addPayment(String data) {
 
 		Payments payments = new Payments();
+		paymentService ps = new paymentService();
 		
 		// Convert input string to json object
 		JsonObject itemObject = new JsonParser().parse(data).getAsJsonObject();
 
 		payments.setPaymentType(itemObject.get("paymentType").getAsString());
 		payments.setPaymentAmount(itemObject.get("paymentAmount").getAsDouble());
-		payments.setAppointmentID(itemObject.get("appointmentID").getAsInt());
+		payments.setAppointmentID(ps.getAppointmentID());
 
 		return dbHandler.insert(payments);
 	}
@@ -140,12 +153,20 @@ public class paymentService implements PaymentServiceInterface {
 
 	}
 
-	@GET
-	@Path("/getAppointmentID/")
-	@Produces(MediaType.TEXT_HTML)
+	//implement communication between services
 	public int getAppointmentID() {
-		Appointments appointment = new Appointments();
-		return appointment.getId();
+		Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
+		WebTarget webTarget = client.target("http://localhost:8080/HealthCareSystem/Services/appointments").path("lastID");
+		 
+		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		Response response = invocationBuilder.get();
+		 
+		Integer id = response.readEntity(Integer.class);
+		     
+		System.out.println(response.getStatus());
+		System.out.println(id);
+		 
+		return id;
 	}
 
 }
