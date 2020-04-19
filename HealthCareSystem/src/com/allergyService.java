@@ -15,13 +15,14 @@ import controller.PatientsDBHandler;
 import model.Allergies;
 import model.Patient;
 
-@Path("allergies")
+@Path("/secured/allergies")
 public class allergyService {
 	
 	
 	
 	PatientsDBHandler repo = new PatientsDBHandler();
-	
+
+//secured get all allergies
 	@GET
 	@Produces({MediaType.APPLICATION_XML ,MediaType.APPLICATION_JSON})
 	public List<Allergies> getAllergies() {
@@ -30,7 +31,7 @@ public class allergyService {
 		return repo.getAllergies() ;
 	}
 	
-	
+//secured add allergies	
 	@POST
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Allergies createAllergy(Allergies a1) {
@@ -43,7 +44,7 @@ public class allergyService {
 		return a1;
 	}
 	
-	
+//secured get allergies by patient ID	
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -52,7 +53,7 @@ public class allergyService {
 		return repo.getAllergybyPatientID(id) ;
 	}
 
-	
+//secured get allergies by ID	
 	@GET
 	@Path("allergyID/{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -62,6 +63,7 @@ public class allergyService {
 		return repo.getAllergybyID(id) ;
 	}
 	
+//secured update allergy	
 	@PUT
 	@Path("updateAllergy")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -85,6 +87,8 @@ public class allergyService {
 		return a1;
 	}
 	
+
+//secured delete allergy	
 	@DELETE
 	@Path("{id}")
 	public Allergies deleteAllergy(@PathParam("id") int id) {
