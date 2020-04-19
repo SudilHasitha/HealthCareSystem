@@ -161,6 +161,13 @@ public class PaymentsDBHandler {
 				String query = "select * from payments where paymentID = " + paymentID1;
 				Statement statement = con.createStatement();
 				ResultSet resultSet = statement.executeQuery(query);
+				
+				if(!(resultSet.next())) {
+					Payments payments = new Payments();
+					payments.setError("In valid user ID");
+					Results.add(payments);
+					return Results;
+				}
 
 				while (resultSet.next()) {
 					
