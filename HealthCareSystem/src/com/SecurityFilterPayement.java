@@ -68,9 +68,12 @@ public class SecurityFilterPayement implements javax.ws.rs.container.ContainerRe
 					while (resultSet.next()) {
 
 						String Password = Integer.toString(resultSet.getInt(1));
-						String name = Integer.toString(resultSet.getInt(2));
+						String name = resultSet.getString(2);
 						
-						if (password.equalsIgnoreCase(Password)&&userName.equalsIgnoreCase(name)) {
+						System.out.println(" password "+Password);
+						System.out.println("name "+name);
+						
+						if (password.equalsIgnoreCase(Password) && userName.equalsIgnoreCase(name)) {
 							return;
 						}
 					}
