@@ -16,21 +16,21 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 @Provider
-public class PatientSecurityFilter implements javax.ws.rs.container.ContainerRequestFilter {
+public class SecurityFilter implements javax.ws.rs.container.ContainerRequestFilter {
 
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String AUTHORIZATION_PREFIX = "Basic ";
-	private static final String URL_PREFIX_PATIENT = "patients/secured";
-
+	private static final String URL_PREFIX_ADMIN = "Admin";
+//	private static final String URL_PREFIX_HOSPITAL = "hospital";
 	
-	
+	// Create DB connection
 	private Connection connect() {
 		Connection con = null;
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			//change DB connection details as needed port number, username and password 
-			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/paf", "root", "admin");
+			// Con details
+			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/payments", "root", "Pa$$w0rd");
 		} catch (Exception e) {
 			// e.printStackTrace();
 		}
@@ -41,7 +41,7 @@ public class PatientSecurityFilter implements javax.ws.rs.container.ContainerReq
 	@Override
 	public void filter(ContainerRequestContext requestcontext) throws IOException {
 
-	if (requestcontext.getUriInfo().getPath().contains(URL_PREFIX_PATIENT)) {
+		if (requestcontext.getUriInfo().getPath().contains(URL_PREFIX_ADMIN)) {
 			List<String> authHeader = requestcontext.getHeaders().get(AUTHORIZATION_HEADER);
 
 			if (authHeader != null && authHeader.size() > 0) {
@@ -52,28 +52,24 @@ public class PatientSecurityFilter implements javax.ws.rs.container.ContainerReq
 
 				StringTokenizer tokenizer = new StringTokenizer(decodeString, ":");
 
-				String email = tokenizer.nextToken();
+				String userName = tokenizer.nextToken();
 				String password = tokenizer.nextToken();
 
-				System.out.println(email);
-				System.out.println(password);
 				
 				// find whether user in the DB
 				Connection con = connect();
 
 				try {
-					String query = "select p.email , p.password from patients p where p.email = '" + email + "'";
+					String query = "select * from payments.users where Password = " + password;
 					Statement statement = con.createStatement();
 					ResultSet resultSet = statement.executeQuery(query);
 					
-				//	System.out.println("Header password "+password);
+					System.out.println("Header password "+password);
 					while (resultSet.next()) {
 
-						String Email = resultSet.getString(1);
-						String Password = resultSet.getString(2);
+						String Password = Integer.toString(resultSet.getInt(1));
 						System.out.println("DB password "+Password);
-						//email is used as the username  
-						if (password.equalsIgnoreCase(Password) && email.equalsIgnoreCase(Email)) {
+						if (password.equalsIgnoreCase(Password)) {
 							return;
 						}
 					}
@@ -85,16 +81,12 @@ public class PatientSecurityFilter implements javax.ws.rs.container.ContainerReq
 				}
 
 			}
-			
+
 			// if authentication fails
-						Response unauthorizedStatus = Response.status(Response.Status.UNAUTHORIZED)
-								.entity("User cannot access the responce.").build();
+			Response unauthorizedStatus = Response.status(Response.Status.UNAUTHORIZED)
+					.entity("User cannot access the responce.").build();
 
-						requestcontext.abortWith(unauthorizedStatus);
+			requestcontext.abortWith(unauthorizedStatus);
 		}
-
-			
-		
 	}
 }
-

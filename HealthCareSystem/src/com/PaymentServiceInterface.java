@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.ws.rs.*;
 
-
+import model.Appointments;
 import model.Payments;
 
 
@@ -23,11 +23,12 @@ public interface PaymentServiceInterface {
 
 	public String updatePayment(String data);
 
-	public String addPayment(@FormParam("paymentAmount") String amount, @FormParam("paymentType") String type);
+	public String addPayment(@FormParam("paymentAmount") String amount, @FormParam("paymentType") String type,
+			@FormParam("appointmentID") String App_id);
 
 	public String addPayment(String data);
 
 	public String deletePayment(String id);
 
-	
+	public int getAppointmentID();
 }

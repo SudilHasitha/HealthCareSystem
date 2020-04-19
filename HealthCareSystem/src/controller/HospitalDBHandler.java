@@ -2,6 +2,8 @@ package controller;
 
 import java.sql.*;
 
+import model.Hospital;
+
 public class HospitalDBHandler {
 	private Connection connect()
 	{
@@ -19,15 +21,7 @@ public class HospitalDBHandler {
 		return con;
 	}
 	
-	public String HospitalInsert(String hospital_reg_no,
-			 String hos_name,
-			 String hos_type,
-			 String AddressLine1,
-			 String city,
-			 String province,
-			 String telephone,
-			 String hospital_fee,
-			 String hos_password) {
+	public String HospitalInsert(Hospital hos) {
 		
 		String output = "";
 
@@ -40,21 +34,22 @@ public class HospitalDBHandler {
 
 			// prepared statement
 			String query = "Insert into hospital (hospital_reg_no,hos_name,hos_type,"
-					+ "AddressLine1,city,province,telephone,hospital_fee,hos_password) "
-					+ "values (?,?,?,?,?,?,?,?,?) ";
+					+ "AddressLine1,city,province,telephone,hospital_fee,hos_password,hos_email) "
+					+ "values (?,?,?,?,?,?,?,?,?,?) ";
 
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 
 			// binding values
-			preparedStatement.setString(1, hospital_reg_no);
-			preparedStatement.setString(2, hos_name);
-			preparedStatement.setString(3, hos_type);
-			preparedStatement.setString(4, AddressLine1);
-			preparedStatement.setString(5, city);
-			preparedStatement.setString(6, province);
-			preparedStatement.setString(7, telephone);
-			preparedStatement.setDouble(8, Double.parseDouble(hospital_fee));
-			preparedStatement.setString(9, hos_password);
+			preparedStatement.setString(1, hos.getHospital_reg_no());
+			preparedStatement.setString(2, hos.getHos_name());
+			preparedStatement.setString(3, hos.gethos_type());
+			preparedStatement.setString(4, hos.getAddressLine1());
+			preparedStatement.setString(5, hos.getCity());
+			preparedStatement.setString(6, hos.getProvince());
+			preparedStatement.setString(7, hos.getTelephone());
+			preparedStatement.setDouble(8, hos.getHospital_fee());
+			preparedStatement.setString(9, hos.getHos_password());
+			preparedStatement.setString(10, hos.getHos_email());
 			
 
 			// execution
@@ -66,46 +61,14 @@ public class HospitalDBHandler {
 		} catch (Exception e) {
 			output = "Error while inserting";
 			System.err.println(e.getMessage());
+			;
 		}
 
 		return output;
 
 	}
 	
-	public String getHosID(String reg_no) {
-		
-		String output = "";
-
-		try {
-			Connection con = connect();
-
-			if (con == null) {
-				return "Error while connecting to DB";
-			}
-			
-			String query = "Select hos_id from hospital WHERE hospital_reg_no =?";
-			PreparedStatement preparedStmt = con.prepareStatement(query);
-			
-			preparedStmt.setString(1, reg_no);
-			
-			ResultSet rs = preparedStmt.executeQuery(query);
-			
-			String hos_id = Integer.toString(rs.getInt("hos_id"));
-				
-			output =hos_id;
-				
-			con.close();
-			}
-			catch (Exception e)
-			{
-				output = "Error while reading the Hos_id.";
-				System.err.println(e.getMessage());
-			}
-			return output;
-		}
-	
-	public String updateHos(String hospital_reg_no,	String hos_name,String hos_type,String AddressLine1,String city, String province, String telephone,String hospital_fee) 
-	{
+	public String updateHos(Hospital hos) {
 
 		String output = "";
 
@@ -117,20 +80,23 @@ public class HospitalDBHandler {
 			}
 
 			// prepared statement
-			String query = "UPDATE hospital SET hos_name=?,hos_type=?,AddressLine1=?,city=?,province=?,telephone=?,hospital_fee=?"
-					+ " WHERE hospital_reg_no =?";
+			String query = "UPDATE hospital SET hospital_reg_no=?,hos_name=?,hos_type=?,AddressLine1=?,city=?,province=?,telephone=?,hospital_fee=?,hos_password=?,hos_email=?"
+					+ " WHERE hos_id =?";
 
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 
 			// binding values
-			preparedStatement.setString(1, hos_name);
-			preparedStatement.setString(2, hos_type);
-			preparedStatement.setString(3, AddressLine1);
-			preparedStatement.setString(4, city);
-			preparedStatement.setString(5, province);
-			preparedStatement.setString(6, telephone);
-			preparedStatement.setDouble(7, Double.parseDouble(hospital_fee));
-			preparedStatement.setString(8, hospital_reg_no);
+			preparedStatement.setString(1, hos.getHospital_reg_no());
+			preparedStatement.setString(2, hos.getHos_name());
+			preparedStatement.setString(3, hos.gethos_type());
+			preparedStatement.setString(4, hos.getAddressLine1());
+			preparedStatement.setString(5, hos.getCity());
+			preparedStatement.setString(6, hos.getProvince());
+			preparedStatement.setString(7, hos.getTelephone());
+			preparedStatement.setDouble(8, hos.getHospital_fee());
+			preparedStatement.setString(9, hos.getHos_password());
+			preparedStatement.setString(10, hos.getHos_email());
+			preparedStatement.setInt(11, hos.getHos_id());
 			// execution
 			preparedStatement.execute();
 			con.close();
@@ -146,9 +112,7 @@ public class HospitalDBHandler {
 		return output;
 	}
 	
-	public String updateHosPassword(String hospital_reg_no,String password) 
-	{
-
+	public String deleteHos(String RegNo) {
 		String output = "";
 
 		try {
@@ -159,59 +123,28 @@ public class HospitalDBHandler {
 			}
 
 			// prepared statement
-			String query = "UPDATE hospital SET hos_password=?"
-					+ " WHERE hospital_reg_no =?";
+			String query = "Delete from hospital where  Hospital_reg_no= ?";
 
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 
 			// binding values
-			preparedStatement.setString(1, password);
-			preparedStatement.setString(2, hospital_reg_no);
+			preparedStatement.setString(1,RegNo);
+
 			// execution
 			preparedStatement.execute();
 			con.close();
 
-			output = "Updated Successfully";
+			output = "Deleted Successfully";
 
 		} catch (Exception e) {
-			output = "Error while updating";
+			output = "Error while Deleting";
 			System.err.println(e.getMessage());
-			;
 		}
 
 		return output;
 	}
 	
-	public String deleteHospital(String ID)
-	{
-		String output = "";
-		try
-		{
-			Connection con = connect();
-			if (con == null)
-			{
-				return "Error while connecting to the database for deleting."; 
-			}
-			// create a prepared statement
-			String query = "delete from hospital where hos_id=?";
-			PreparedStatement preparedStmt = con.prepareStatement(query);
-			// binding values
-			preparedStmt.setInt(1, Integer.parseInt(ID));
-			// execute the statement
-			preparedStmt.execute();
-			con.close();
-			output = "Deleted successfully";
-		}
-		catch (Exception e)
-		{
-			output = "Error while deleting the item.";
-			System.err.println(e.getMessage());
-		}
-		return output;
-	}
-	
-	
-	public String readAllHospital() {
+	public String readHospital(String regno) {
 		String output = "";
 
 		try {
@@ -223,57 +156,9 @@ public class HospitalDBHandler {
 
 			// Prepare the html table to be displayed
 			output = "<table border=\"1\"><tr><th>Registration No</th><th>Name</th><th>Type</th>"
-					+ "<th>Addressline</th><th>city</th><th>province</th><th>Contact</th><th>Fee</th></tr>";
+					+ "<th>Addressline</th><th>city</th><th>province</th><th>Contact</th><th>Fee</th><th>E-mail</th></tr>";
 			
-			String query = "select * from hospital";
-			Statement statement = con.createStatement();
-			ResultSet resultSet = statement.executeQuery(query);
-
-			// iterate through the results
-			while (resultSet.next()) {
-				String hospital_reg_no = resultSet.getString(2);
-				String hos_name = resultSet.getString(3);
-				String type_private = resultSet.getString(4);
-				String AddressLine1 = resultSet.getString(5);
-				String city = resultSet.getString(6);
-				String province = resultSet.getString(7);
-				String telephone = resultSet.getString(8);
-				String hospital_fee = Double.toString(resultSet.getDouble(9));
-
-				
-				// add to html table
-				output += "<tr><td>" + hospital_reg_no + "</td>";
-				output += "<td>" + hos_name + "</td>";
-				output += "<td>" + type_private + "</td>";
-				output += "<td>" + AddressLine1 + "</td>";
-				output += "<td>" + city + "</td>";
-				output += "<td>" + province + "</td>";
-				output += "<td>" + telephone + "</td>";
-				output += "<td>" + hospital_fee + "</td>";
-		
-			}
-
-			con.close();
-
-			output += "</table>";
-		} catch (Exception e) {
-			output = "Error while reading";
-			System.err.println(e.getMessage());
-		}
-		return output;
-	}
-	
-	public String readHospital(int id) {
-		String output = "";
-
-		try {
-			Connection con = connect();
-
-			if (con == null) {
-				return "Error while connecting";
-			}
-			
-			String query = "select * from hospital where hos_id = " +id;
+			String query = "select * from hospital where hospital_reg_no = "+regno;
 			Statement statement = con.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
 
@@ -288,22 +173,26 @@ public class HospitalDBHandler {
 				String province = resultSet.getString(7);
 				String telephone = resultSet.getString(8);
 				String hospital_fee = Double.toString(resultSet.getDouble(9));
+				String hos_email = Double.toString(resultSet.getDouble(11));
 				
-				
-				// Prepare the html table to be displayed
-				output = "<table><tr><th> Hospital ID</th><td> : </td><td>"+ hos_id + "</td></tr>";
-				output += "<tr><th> Hospital hospital_reg_no</th><td> : </td><td>" + hospital_reg_no + "</td></tr>";
-				output += "<tr><th> Hospital Name</th><td> : </td><td>" + hos_name + "</td></tr>";
-				output += "<tr><th> Hospital Type</th><td> : </td><td>" + type_private + "</td></tr>";
-				output += "<tr><th> Hospital Address line 1</th><td> : </td><td>" + AddressLine1 + "</td></tr>";
-				output += "<tr><th> City</th><td> : </td><td>" + city + "</td></tr>";
-				output += "<tr><th> Province </th><td> : </td><td>" + province + "</td></tr>";
-				output += "<tr><th>Telephone</th><td> : </td><td>" + telephone + "</td></tr>";
-				output += "<tr><th> Hospital fee</th><td> : </td><td>" + hospital_fee + "</td></tr>";
-		
-	
+				// add to html table
+				output += "<tr><td>" + hospital_reg_no + "</td>";
+				output += "<td>" + hos_name + "</td>";
+				output += "<td>" + type_private + "</td>";
+				output += "<td>" + AddressLine1 + "</td>";
+				output += "<td>" + city + "</td>";
+				output += "<td>" + province + "</td>";
+				output += "<td>" + telephone + "</td>";
+				output += "<td>" + hospital_fee + "</td>";
+				output += "<tr><td>" + hos_email + "</td>";
+
+				// buttons
+				output += "<td><input name=\"btnUpdate\" type=\"button\" value=\"Update\" class=\"btn btn-secondary\"></td>"
+						+ "<td><form method=\"post\" action=\"items.jsp\">"
+						+ "<input name=\"btnRemove\" type=\"submit\" value=\"Remove\" class=\"btn btn-danger\">"
+						+ "<input name=\"itemID\" type=\"hidden\" value=\"" + hos_id + "\">" + "</form></td></tr>";
 			}
-			
+
 			con.close();
 
 			output += "</table>";
@@ -314,48 +203,7 @@ public class HospitalDBHandler {
 		return output;
 	}
 	
-	public boolean loginHos(String regNo, String password) {
-		boolean output = false;
-
-		try {
-			Connection con = connect();
-
-			if (con == null) {
-				System.out.println("Error while connecting database");
-				
-				 output=  false;
-			}
-			
-			String query = "select hospital_reg_no,hos_password from hospital h where hospital_reg_no = "+regNo + "and hos_password = '" +password +"'";
-			Statement statement = con.createStatement();
-			ResultSet resultSet = statement.executeQuery(query);
-			
-			if(resultSet.next() == false) {
-				System.out.println("Invalide user 'Registration Number' or 'Password'");
-				output =  false;
-			}
-		
-			while(resultSet.next()) {
-				String hospital_reg_no = resultSet.getString(1);
-				String hos_name = resultSet.getString(2);
-					
-					System.out.println("hospital_reg_no" + hospital_reg_no);
-					System.out.println("hos_name" + hos_name);
-					
-					output=  true;
-			 }
-			
-			 con.close();
-		}
-		catch(Exception e) {
-			System.out.println( "Error while reading");
-			System.out.println(e.getMessage());
-		}
-		
-		return output;
-	}
-	
-/*	public String readHospitalDoctersDetail(int id) {
+	public String readAllHospital() {
 		String output = "";
 
 		try {
@@ -364,32 +212,46 @@ public class HospitalDBHandler {
 			if (con == null) {
 				return "Error while connecting";
 			}
+
+			// Prepare the html table to be displayed
+			output = "<table border=\"1\"><tr><th>Registration No</th><th>Name</th><th>Type</th>"
+					+ "<th>Addressline</th><th>city</th><th>province</th><th>Contact</th><th>Fee</th><th>E-mail</th></tr>";
 			
-			String query = "select distinct  doctor.docid, hospital.hos_name,doctor.doc_name"
-					+ "from hospital "
-					+ " left join (visit cross join doctor) "
-					+ "on (hospital.hos_id = visit.hosid "
-					+ "and visit.docid = doctor.docid )"
-					+ "where hospital.hos_id=" +id;
-			
+			String query = "select * from hospital";
 			Statement statement = con.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
 
 			// iterate through the results
 			while (resultSet.next()) {
-				String hospital_reg_no = resultSet.getString(1);
-				String hos_name = resultSet.getString(2);
-				String docid =Integer.toString(resultSet.getInt(4));
-				String doc_name = resultSet.getString(3);
+				String hos_id = Integer.toString(resultSet.getInt(1));
+				String hospital_reg_no = resultSet.getString(2);
+				String hos_name = resultSet.getString(3);
+				String type_private = resultSet.getString(4);
+				String AddressLine1 = resultSet.getString(5);
+				String city = resultSet.getString(6);
+				String province = resultSet.getString(7);
+				String telephone = resultSet.getString(8);
+				String hospital_fee = Double.toString(resultSet.getDouble(9));
+				String hos_email = Double.toString(resultSet.getDouble(11));
 				
-				// Prepare the html table to be displayed
-				output = "<table>";
-				output += "<tr><th> Hospital Name</th><td> : </td><td>" + hos_name + "</td></tr>";
-				output += "</table><table><tr><th>Docter id</th><th> DOcter name</th></tr>";
-				output += "<tr><td>" + docid + "</td><td>" + doc_name + "</td></tr>";
-	
+				// add to html table
+				output += "<tr><td>" + hospital_reg_no + "</td>";
+				output += "<td>" + hos_name + "</td>";
+				output += "<td>" + type_private + "</td>";
+				output += "<td>" + AddressLine1 + "</td>";
+				output += "<td>" + city + "</td>";
+				output += "<td>" + province + "</td>";
+				output += "<td>" + telephone + "</td>";
+				output += "<td>" + hospital_fee + "</td>";
+				output += "<tr><td>" + hos_email + "</td>";
+
+				// buttons
+				output += "<td><input name=\"btnUpdate\" type=\"button\" value=\"Update\" class=\"btn btn-secondary\"></td>"
+						+ "<td><form method=\"post\" action=\"items.jsp\">"
+						+ "<input name=\"btnRemove\" type=\"submit\" value=\"Remove\" class=\"btn btn-danger\">"
+						+ "<input name=\"itemID\" type=\"hidden\" value=\"" + hos_id + "\">" + "</form></td></tr>";
 			}
-			
+
 			con.close();
 
 			output += "</table>";
@@ -400,6 +262,54 @@ public class HospitalDBHandler {
 		return output;
 	}
 	
+/*	public String readHospitalDoctersDetail() {
+		String output = "";
+
+		try {
+			Connection con = connect();
+
+			if (con == null) {
+				return "Error while connecting";
+			}
+
+			// Prepare the html table to be displayed
+			output = "<table border=\"1\"><tr><th>Registration No</th><th>Hospital Name</th><th>Hospital fee</th>"
+					+ "<th>Docter ID</th><th>Docter Name</th><th>Docter fee</th></tr>";
+			
+			String query = "select h.hospital_reg_no,h.hos_name,h.hospital_fee,d.doc_id,d.docname,d.docfee from hospital h,doctor d"
+					+ "where hos_id=?"
+					+ "order by h.hospital_reg_no";
+			Statement statement = con.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+
+			// iterate through the results
+			while (resultSet.next()) {
+				String hospital_reg_no = resultSet.getString(1);
+				String hos_name = resultSet.getString(2);
+				String hospital_fee = Double.toString(resultSet.getDouble(3));
+				String Docid = resultSet.getString(4);
+				String DocName = resultSet.getString(5);
+				String Docfee = Double.toString(resultSet.getDouble(6));
+				
+				// add to html table
+				output += "<tr><td>" + hospital_reg_no + "</td>";
+				output += "<td>" + hos_name + "</td>";
+				output += "<td>" + hospital_fee + "</td>";
+				output += "<td>" + Docid + "</td>";
+				output += "<td>" + DocName + "</td>";
+				output += "<td>" + Docfee + "</td>";
+			}
+
+			con.close();
+
+			output += "</table>";
+		} catch (Exception e) {
+			output = "Error while reading";
+			System.err.println(e.getMessage());
+		}
+		return output;
+	}
+	*/
 	/*public String readHospitalPatientDetail() {
 		String output = "";
 

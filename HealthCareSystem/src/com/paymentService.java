@@ -46,14 +46,14 @@ public class paymentService implements PaymentServiceInterface {
 
 	@Override
 	@GET
-	@Path("/patients/secured/getPayment/{ID}")
+	@Path("/getPayment/{ID}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Payments> getPaymentJSON(@PathParam("ID") int id) {
 		return dbHandler.readJSON(String.valueOf(id));
 	}
 
 	@POST
-	@Path("/patients/secured/getPayment/")
+	@Path("/getPayment/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String getPayment(String paymentID) {
@@ -74,19 +74,11 @@ public class paymentService implements PaymentServiceInterface {
 			@FormParam("appointmentID") String App_id, @FormParam("paymentAmount") String amount) {
 
 		Payments payments = new Payments();
-		
-		
-		
-		int ID =Integer.parseInt(id);
-		String TYPE  = type;
-		Double AMOUNT = Double.parseDouble(amount);
-		int APPID = Integer.parseInt(App_id);
-		
-		
-		payments.setPaymentID(ID);
-		payments.setPaymentType(TYPE);
-		payments.setPaymentAmount(AMOUNT);
-		payments.setAppointmentID(APPID);
+
+		payments.setPaymentID(Integer.parseInt(id));
+		payments.setPaymentType(type);
+		payments.setPaymentAmount(Double.parseDouble(App_id));
+		payments.setAppointmentID(Integer.parseInt(amount));
 
 		return dbHandler.update(payments);
 
@@ -112,7 +104,7 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@POST
-	@Path("/patients/secured/insertPayment/")
+	@Path("/insertPayment/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public String addPayment(@FormParam("paymentAmount") String amount, @FormParam("paymentType") String type) {
@@ -129,7 +121,7 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@POST
-	@Path("/patients/secured/insertPaymentJSON/")
+	@Path("/insertPaymentJSON/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String addPayment(String data) {
@@ -164,7 +156,7 @@ public class paymentService implements PaymentServiceInterface {
 	//implement communication between services
 	public int getAppointmentID() {
 		Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
-		WebTarget webTarget = client.target("http://localhost:8080/HealthCareSystem/Services/Appointment").path("lastID");
+		WebTarget webTarget = client.target("http://localhost:8080/HealthCareSystem/Services/appointments").path("lastID");
 		 
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
 		Response response = invocationBuilder.get();
@@ -175,6 +167,12 @@ public class paymentService implements PaymentServiceInterface {
 		System.out.println(id);
 		 
 		return id;
+	}
+
+	@Override
+	public String addPayment(String amount, String type, String App_id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

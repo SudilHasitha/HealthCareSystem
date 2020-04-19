@@ -15,6 +15,7 @@ public class Hospital {
 	private String telephone;
 	private double hospital_fee;
 	private String hos_password;
+	private String hos_email;
 	
 	public int getHos_id() {
 		return hos_id;
@@ -74,13 +75,19 @@ public class Hospital {
 	public void setHos_password(String hos_password) {
 		this.hos_password = hos_password;
 	}
+	public String getHos_email() {
+		return hos_email;
+	}
+	public void setHos_email(String hos_email) {
+		this.hos_email = hos_email;
+	}
 
 	@Override
 	public String toString() {
 		return "Hospital [hospital_reg_no=" + hospital_reg_no + ", hos_name=" + hos_name + ", hos_type="
 				+ hos_type + ", AddressLine1=" + AddressLine1 + ", city=" + city + ", province=" + province
 				+ ", telephone=" + telephone + ", hospital_fee=" + hospital_fee + ", hos_password=" + hos_password
-				+ ", hos_email=" + "]";
+				+ ", hos_email=" + hos_email + "]";
 	}
 	
 }

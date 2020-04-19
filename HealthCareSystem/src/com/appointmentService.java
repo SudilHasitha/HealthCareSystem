@@ -5,17 +5,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import controller.AppointmentDBHandler;
+import model.Appointments;
 
-@Path("/appointments")
+@Path("/appointmentService")
 public class appointmentService {
 
-	AppointmentDBHandler appointment = new AppointmentDBHandler();
+	Appointments appointment = new Appointments();
 	
 	@GET
-	@Path("/lastID")
+	@Path("/Admin/getAppointmentID/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public int getAppointmentID() {
+	public String getAppointmentID() {
 		return appointment.getAppointmentID();
 	}
 	

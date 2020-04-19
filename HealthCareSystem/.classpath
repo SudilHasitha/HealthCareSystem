@@ -22,5 +22,8 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/THENUWARA/Downloads/apache-tomcat-8.5.54/bin/bootstrap.jar"/>
+	<classpathentry kind="lib" path="C:/Users/THENUWARA/Downloads/apache-tomcat-8.5.54/bin/commons-daemon.jar"/>
+	<classpathentry kind="lib" path="C:/Users/THENUWARA/Downloads/apache-tomcat-8.5.54/bin/tomcat-juli.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -16,7 +16,6 @@ public class Patient {
 	private int patientTelephone;
 	private String bloodType;
 	private String email;
-	private String password;
 	private List<Allergies> allergies;
 	
 	
@@ -77,18 +76,10 @@ public class Patient {
 	}
 	
 	
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
 	@Override
 	public String toString() {
 		return "Patient [name=" + name + ", age=" + age + ", id=" + id + ", patientAddress=" + patientAddress
-				+ ", patientTelephone=" + patientTelephone + ", bloodType=" + bloodType + ", email=" + email
-				+ ", password=" + password + "]";
+				+ ", patientTelephone=" + patientTelephone + ", bloodType=" + bloodType + ", email=" + email + "]";
 	}
 	
 
