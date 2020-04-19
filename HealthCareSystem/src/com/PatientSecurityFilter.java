@@ -29,7 +29,7 @@ public class PatientSecurityFilter implements javax.ws.rs.container.ContainerReq
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			//change DB connection details as needed port number, username and password 
+			
 			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/paf", "root", "admin");
 		} catch (Exception e) {
 			// e.printStackTrace();
