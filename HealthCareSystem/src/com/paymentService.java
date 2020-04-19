@@ -46,14 +46,14 @@ public class paymentService implements PaymentServiceInterface {
 
 	@Override
 	@GET
-	@Path("/getPayment/{ID}")
+	@Path("/patients/secured/getPayment/{ID}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Payments> getPaymentJSON(@PathParam("ID") int id) {
 		return dbHandler.readJSON(String.valueOf(id));
 	}
 
 	@POST
-	@Path("/getPayment/")
+	@Path("/patients/secured/getPayment/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String getPayment(String paymentID) {
@@ -104,7 +104,7 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@POST
-	@Path("/insertPayment/")
+	@Path("/patients/secured/insertPayment/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public String addPayment(@FormParam("paymentAmount") String amount, @FormParam("paymentType") String type) {
@@ -121,7 +121,7 @@ public class paymentService implements PaymentServiceInterface {
 	}
 
 	@POST
-	@Path("/insertPaymentJSON/")
+	@Path("/patients/secured/insertPaymentJSON/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String addPayment(String data) {
