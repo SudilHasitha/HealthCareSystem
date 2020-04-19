@@ -145,7 +145,7 @@ public class paymentService implements PaymentServiceInterface {
 	@Produces(MediaType.TEXT_HTML)
 	public int getAppointmentID() {
 		Appointments appointment = new Appointments();
-		return appointment.getId();
+		return appointment.getPatient_id();
 	}
 
 }

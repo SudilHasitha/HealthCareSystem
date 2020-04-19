@@ -23,6 +23,7 @@
 				<configuration>
 					<warSourceDirectory>WebContent</warSourceDirectory>
 				</configuration>
+				
 			</plugin>
 		</plugins>
 	</build>
@@ -56,15 +57,9 @@
 			<version>2.17</version>
 		</dependency>
 		<dependency>
-		<groupId>org.jsoup</groupId>
-		<artifactId>jsoup</artifactId>
-		<version>1.8.1</version>
-	</dependency>
-
-
-
-
-
-
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.8.1</version>
+		</dependency>
 	</dependencies>
 </project>
