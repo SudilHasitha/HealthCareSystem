@@ -22,8 +22,9 @@ public class PatientService {
 	 
 	
 	PatientsDBHandler repo = new PatientsDBHandler();
-	
+//secured get all patient details	
 	@GET
+	@Path("secured")
 	@Produces({MediaType.APPLICATION_XML ,MediaType.APPLICATION_JSON})
 	public List<Patient> getPatients() {
 		
@@ -33,9 +34,9 @@ public class PatientService {
 		return repo.getPatients() ;
 	}
 	    
-	
+//secured get patient by ID
 	@GET
-	@Path("{id}")
+	@Path("/secured/{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Patient getPatient(@PathParam("id") int id) {
 		Patient patient = repo.getPatient(id);
@@ -43,7 +44,7 @@ public class PatientService {
 		return  patient;
 	}
 	
-
+//not secured create patient 
 	@POST
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Patient createPatient(Patient p1) {
@@ -55,14 +56,15 @@ public class PatientService {
 		System.out.println(p1.getBloodType() );
 		System.out.println(p1.getEmail());
 		System.out.println(p1.getPatientTelephone());
+		System.out.println(p1.getPassword());
 	
 		int id = repo.createPatient(p1);
 		p1.setId(id);
 		return p1;
 	}
-	
+//secured update patient
 	@PUT
-	@Path("updatePatient")
+	@Path("/secured/updatePatient")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Patient updatePatient(Patient p1) {
 		
@@ -74,7 +76,7 @@ public class PatientService {
 		System.out.println(p1.getBloodType() );
 		System.out.println(p1.getEmail());
 		System.out.println(p1.getPatientTelephone());
-	
+		System.out.println(p1.getPassword());
 		
 		if(repo.getPatient(p1.getId()).getId()==0) {
 			
@@ -87,9 +89,9 @@ public class PatientService {
 		return p1;
 	}
 	
- 
+ //secured delete patient by ID
 	@DELETE
-	@Path("{id}")
+	@Path("/secured/{id}")
 	public Patient deletePatient(@PathParam("id") int id) {
 		
 		Patient p = repo.getPatient(id);
