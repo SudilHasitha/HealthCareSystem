@@ -1,5 +1,6 @@
 package model;
 
+// Appointments model
 public class Appointments {
 
 	private int appointment_ID;

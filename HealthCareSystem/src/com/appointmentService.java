@@ -22,6 +22,7 @@ import controller.AppointmentDBHandler;
 import model.Appointments;
 import model.Patient;
 
+// Appointments service
 @Path("/Appointment")
 public class appointmentService {
 
