@@ -164,7 +164,7 @@ public class paymentService implements PaymentServiceInterface {
 	//implement communication between services
 	public int getAppointmentID() {
 		Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
-		WebTarget webTarget = client.target("http://localhost:8080/HealthCareSystem/Services/appointments").path("lastID");
+		WebTarget webTarget = client.target("http://localhost:8080/HealthCareSystem/Services/Appointment").path("lastID");
 		 
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
 		Response response = invocationBuilder.get();
