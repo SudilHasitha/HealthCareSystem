@@ -74,11 +74,19 @@ public class paymentService implements PaymentServiceInterface {
 			@FormParam("appointmentID") String App_id, @FormParam("paymentAmount") String amount) {
 
 		Payments payments = new Payments();
-
-		payments.setPaymentID(Integer.parseInt(id));
-		payments.setPaymentType(type);
-		payments.setPaymentAmount(Double.parseDouble(App_id));
-		payments.setAppointmentID(Integer.parseInt(amount));
+		
+		
+		
+		int ID =Integer.parseInt(id);
+		String TYPE  = type;
+		Double AMOUNT = Double.parseDouble(amount);
+		int APPID = Integer.parseInt(App_id);
+		
+		
+		payments.setPaymentID(ID);
+		payments.setPaymentType(TYPE);
+		payments.setPaymentAmount(AMOUNT);
+		payments.setAppointmentID(APPID);
 
 		return dbHandler.update(payments);
 
