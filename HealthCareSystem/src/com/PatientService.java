@@ -24,7 +24,7 @@ public class PatientService {
 	PatientsDBHandler repo = new PatientsDBHandler();
 //secured get all patient details	
 	@GET
-	@Path("secured")
+	//@Path("secured")
 	@Produces({MediaType.APPLICATION_XML ,MediaType.APPLICATION_JSON})
 	public List<Patient> getPatients() {
 		
